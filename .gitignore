@@ -1,0 +1,5 @@
+/frontend/.env.local
+/frontend/node_modules
+/docs
+.env
+/.env.local
