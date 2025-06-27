@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 const navItems = [
   { label: "Dashboard", href: "/dashboard" },
   { label: "Income", href: "/dashboard/income" },
-  { label: "Jaza Jar", href: "/dashboard/jaza" },
+  { label: "Jaza Jar", href: "/dashboard/jaza_jar" },
   { label: "Insights", href: "/dashboard/insights" },
   { label: "Settings", href: "/dashboard/settings" },
 ];
