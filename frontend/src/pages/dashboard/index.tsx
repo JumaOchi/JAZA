@@ -1,45 +1,106 @@
+import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function DashboardHome() {
-  const insights = [
-    "You are on track to increase revenue by 25% this week.",
-    "Your busiest sales days are Fridays between 3-6PM.",
-    "You could grow savings by 15% by reducing float withdrawals."
-  ];
+  const [fullName, setFullName] = useState("Loading...");
+  const [businessType, setBusinessType] = useState("");
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const {
+        data: { user },
+        error: sessionError,
+      } = await supabase.auth.getUser();
+
+      if (user?.id) {
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("full_name, business_type")
+          .eq("id", user.id)
+          .single();
+
+        if (!profileError && profile) {
+          setFullName(profile.full_name);
+          setBusinessType(profile.business_type || "");
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const insightsMap: Record<string, string[]> = {
+    boda: [
+      "Peak hours: 6–9AM and 4–8PM. Focus on those.",
+      "Fuel cheaper at Total Kamakis & Rubis Thika Road.",
+      "Package delivery around CBD up 20% this week.",
+      "High-demand in Umoja and CBD this Friday."
+    ],
+    mamamboga: [
+      "Tomatoes are cheaper this week in Wakulima Market.",
+      "Sukuma sells best on Tuesdays & Saturdays.",
+      "Kawangware foot traffic up 15% this week.",
+      "Try bundling offers: 3 onions for 20/= sells better."
+    ],
+    thrift: [
+      "Top-selling jackets this season are trench coats.",
+      "Gikomba foot traffic up 10% on Thursdays.",
+      "Try night market at Ngara for faster stock movement."
+    ],
+    food: [
+      "Lunch rush strongest 12-2PM, consider promos.",
+      "Ubereats trending in Kilimani for local meals.",
+      "Source cooking oil in bulk to save 8%."
+    ],
+    taxi: [
+      "Avoid traffic traps: Use Forest Road post-5PM.",
+      "Juja trips trending up this week by 13%.",
+      "Fuel deals available on Shell app near Thika Rd."
+    ],
+    other: [
+      "Track every sale to improve cashflow.",
+      "Consistency improves your Jaza score.",
+      "Stay tuned for weekly financial tips."
+    ]
+  };
+
+  const selectedKey = businessType.toLowerCase().trim();
+  const insights = insightsMap[selectedKey] || insightsMap.other;
 
   const marketTips = [
-    "Best-selling secondhand jackets this season.",
-    "Where mitumba sellers source quality stock.",
-    "Why Nairobi Gikomba outpaces other markets in foot traffic."
+    "Why Gikomba outpaces other markets in foot traffic.",
+    "Which suppliers offer discounts in Kariobangi.",
+    "How to negotiate better delivery terms with vendors."
   ];
 
   return (
     <ProtectedRoute>
       <DashboardLayout>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#111827] mb-2">
-            Welcome back, <span className="text-[#1c8c4c]">Mitumba Pro</span> 👋
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Welcome back, <span className="text-[#1c8c4c]">{fullName}</span> 👋
           </h1>
-          <p className="text-gray-600 text-base">
+          <p className="text-gray-400 text-base">
             Empowering your growth with real-time financial visibility.
           </p>
         </div>
 
         {/* Business Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-          <div className="bg-white p-6 rounded-2xl shadow-sm">
-            <h3 className="text-gray-500 mb-1">Yesterday's Total Earnings</h3>
+          <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
+            <h3 className="text-gray-400 mb-1">Yesterday's Total Earnings</h3>
             <p className="text-2xl font-bold text-[#1c8c4c]">Ksh 1,400</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow-sm">
-            <h3 className="text-gray-500 mb-1">Monthly Revenue Growth</h3>
-            <p className="text-2xl font-bold text-blue-500">+30%</p>
+          <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
+            <h3 className="text-gray-400 mb-1">Monthly Revenue Growth</h3>
+            <p className="text-2xl font-bold text-blue-400">+30%</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow-sm">
-            <h3 className="text-gray-500 mb-1">Jaza Jar Savings</h3>
+          <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
+            <h3 className="text-gray-400 mb-1">Jaza Jar Savings</h3>
             <p className="text-2xl font-bold text-[#1c8c4c]">Ksh 2,000 / 5,000</p>
           </div>
         </div>
@@ -47,15 +108,15 @@ export default function DashboardHome() {
         {/* Action Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
           <motion.div
-            className="bg-[#f0f9ff] p-6 rounded-xl"
+            className="bg-gray-700 p-6 rounded-xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-lg font-semibold text-[#111827] mb-2">
+            <h2 className="text-lg font-semibold text-white mb-2">
               📲 Connect M-Pesa Till
             </h2>
-            <p className="text-sm text-gray-700 mb-3">
+            <p className="text-sm text-gray-300 mb-3">
               Link your business Till or Paybill for real-time income tracking.
             </p>
             <Link href="/dashboard/income">
@@ -66,15 +127,15 @@ export default function DashboardHome() {
           </motion.div>
 
           <motion.div
-            className="bg-[#f0fdf9] p-6 rounded-xl"
+            className="bg-gray-700 p-6 rounded-xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h2 className="text-lg font-semibold text-[#111827] mb-2">
+            <h2 className="text-lg font-semibold text-white mb-2">
               ✍️ Add Daily Cash Earnings
             </h2>
-            <p className="text-sm text-gray-700 mb-3">
+            <p className="text-sm text-gray-300 mb-3">
               Enter your cash sales manually for a full cashflow picture.
             </p>
             <Link href="/dashboard/income">
@@ -87,8 +148,8 @@ export default function DashboardHome() {
 
         {/* Insights */}
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-[#111827] mb-4">🔍 Smart Insights</h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-700">
+          <h2 className="text-xl font-bold text-white mb-4">🔍 Smart Insights</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-300">
             {insights.map((tip, idx) => (
               <li key={idx}>{tip}</li>
             ))}
@@ -97,10 +158,10 @@ export default function DashboardHome() {
 
         {/* Industry Snapshot */}
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-[#111827] mb-4">📰 Mtumba Market Snapshot</h2>
-          <ul className="space-y-2 text-gray-700">
+          <h2 className="text-xl font-bold text-white mb-4">📰 Market Snapshot</h2>
+          <ul className="space-y-2 text-gray-300">
             {marketTips.map((news, idx) => (
-              <li key={idx} className="bg-white p-4 rounded-lg shadow-sm">
+              <li key={idx} className="bg-gray-800 p-4 rounded-lg shadow-sm">
                 {news}
               </li>
             ))}
@@ -109,7 +170,7 @@ export default function DashboardHome() {
 
         {/* Call to Action */}
         <motion.div
-          className="bg-[#e0f7ec] p-6 rounded-xl text-center"
+          className="bg-[#1c8c4c22] p-6 rounded-xl text-center"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -117,7 +178,7 @@ export default function DashboardHome() {
           <h2 className="text-xl font-semibold text-[#1c8c4c] mb-2">
             💡 Boost your growth with Jaza
           </h2>
-          <p className="text-gray-700 mb-4">
+          <p className="text-gray-300 mb-4">
             Save towards your next stock boost or float top-up. Earn access to smart credit by staying consistent.
           </p>
           <Link href="/dashboard/jaza">
@@ -128,7 +189,7 @@ export default function DashboardHome() {
         </motion.div>
 
         {/* Coming Soon Section */}
-        <div className="mt-12 p-6 bg-yellow-50 border border-yellow-300 rounded-xl text-yellow-800 text-center">
+        <div className="mt-12 p-6 bg-gray-700 border border-blue-400 rounded-xl text-blue-300 text-center">
           <h2 className="text-xl font-semibold mb-2">🧠 Coaching & Advice Coming Soon</h2>
           <p className="text-sm">
             Soon you’ll receive personalized financial tips and coaching messages to help you grow your business smarter.

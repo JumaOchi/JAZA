@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '@/lib/supabaseClient';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import DashboardLayout from "@/components/DashboardLayout";
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<any>(null);
@@ -79,63 +80,65 @@ export default function SettingsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-[#121212] text-white px-4 py-6">
-        <div className="max-w-xl mx-auto space-y-8">
-          <h1 className="text-3xl font-bold text-green-400 text-center">Settings</h1>
+      <DashboardLayout>
+        <div className="w-full h-full bg-transparent">
+          <div className="max-w-xl mx-auto space-y-8">
+            <h1 className="text-3xl font-bold text-green-400 text-center">Settings</h1>
 
-          <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
-            <h2 className="text-lg font-semibold text-green-300 mb-2">Update Your Profile</h2>
-            {message && <p className="mb-4 text-sm text-yellow-400">{message}</p>}
+            <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+              <h2 className="text-lg font-semibold text-green-300 mb-2">Update Your Profile</h2>
+              {message && <p className="mb-4 text-sm text-yellow-400">{message}</p>}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Full Name</label>
-                <input
-                  name="full_name"
-                  type="text"
-                  value={form.full_name}
-                  onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2 bg-gray-900 border border-gray-700 text-white"
-                />
-              </div>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Full Name</label>
+                  <input
+                    name="full_name"
+                    type="text"
+                    value={form.full_name}
+                    onChange={handleChange}
+                    className="w-full rounded-lg px-4 py-2 bg-gray-900 border border-gray-700 text-white"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Phone Number</label>
-                <input
-                  name="phone_number"
-                  type="tel"
-                  value={form.phone_number}
-                  onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2 bg-gray-900 border border-gray-700 text-white"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Phone Number</label>
+                  <input
+                    name="phone_number"
+                    type="tel"
+                    value={form.phone_number}
+                    onChange={handleChange}
+                    className="w-full rounded-lg px-4 py-2 bg-gray-900 border border-gray-700 text-white"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Location</label>
-                <input
-                  name="location"
-                  type="text"
-                  value={form.location}
-                  onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2 bg-gray-900 border border-gray-700 text-white"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Location</label>
+                  <input
+                    name="location"
+                    type="text"
+                    value={form.location}
+                    onChange={handleChange}
+                    className="w-full rounded-lg px-4 py-2 bg-gray-900 border border-gray-700 text-white"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 py-2 rounded-xl text-white transition"
-              >
-                {loading ? 'Saving...' : 'Save Changes'}
-              </button>
-            </form>
-          </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-green-600 hover:bg-green-700 py-2 rounded-xl text-white transition"
+                >
+                  {loading ? 'Saving...' : 'Save Changes'}
+                </button>
+              </form>
+            </div>
 
-          <div className="text-center text-sm text-gray-500">
-            Need help? Email us at support@jaza.app
+            <div className="text-center text-sm text-gray-500">
+              Need help? Email us at support@jaza.app
+            </div>
           </div>
         </div>
-      </div>
+      </DashboardLayout>
     </ProtectedRoute>
   );
 }

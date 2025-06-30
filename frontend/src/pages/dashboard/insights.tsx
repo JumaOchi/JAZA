@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { supabase } from '@/lib/supabaseClient';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Session } from '@supabase/supabase-js';
+import DashboardLayout from "@/components/DashboardLayout";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface IncomeEntry {
@@ -97,53 +98,55 @@ export default function InsightsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-[#121212] text-white px-4 py-6">
-        <div className="max-w-2xl mx-auto space-y-8">
+      <DashboardLayout>
+        <div className="w-full h-full bg-transparent">
+          <div className="max-w-2xl mx-auto space-y-8">
 
-          {/* Header */}
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-green-400 mb-2">Smart Business Insights</h1>
-            <p className="text-gray-400">Tailored tips and trends to help your {businessType || 'business'} grow</p>
+            {/* Header */}
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-green-400 mb-2">Smart Business Insights</h1>
+              <p className="text-gray-400">Tailored tips and trends to help your {businessType || 'business'} grow</p>
+            </div>
+
+            {/* Total Income Card */}
+            <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg border border-[#2f2f2f]">
+              <h2 className="text-xl font-semibold text-green-300 mb-1">Total Income</h2>
+              <p className="text-2xl font-bold text-white">KES {totalIncome.toLocaleString()}</p>
+            </div>
+
+            {/* Weekly Chart */}
+            <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg border border-[#2f2f2f]">
+              <h2 className="text-xl font-semibold text-yellow-400 mb-2">Weekly Income Overview</h2>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={weeklyData}>
+                  <XAxis dataKey="day" stroke="#ccc" />
+                  <YAxis stroke="#ccc" />
+                  <Tooltip cursor={{ fill: '#333' }} />
+                  <Bar dataKey="income" fill="#34d399" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Best & Worst Day */}
+            <div className="bg-[#1f1f1f] p-4 rounded-xl text-center text-sm text-gray-300 border border-[#2f2f2f]">
+              🟢 <strong>Best Day:</strong> {bestDay} &nbsp;&nbsp; 🔴 <strong>Slowest:</strong> {worstDay}
+            </div>
+
+            {/* Industry-Specific Tip */}
+            <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg border border-[#2f2f2f]">
+              <h2 className="text-xl font-semibold text-blue-400 mb-2">Smart Tip for You</h2>
+              <p className="text-gray-300 text-base">{tip}</p>
+            </div>
+
+            {/* Coming Soon */}
+            <div className="bg-[#2a2a2a] p-4 rounded-xl text-center text-sm text-gray-400">
+              🛠️ Market Watch: Onion prices expected to rise next month due to Narok drought.<br />
+              Premium: Get real-time supplier alerts and demand maps soon.
+            </div>
+
           </div>
-
-          {/* Total Income Card */}
-          <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg border border-[#2f2f2f]">
-            <h2 className="text-xl font-semibold text-green-300 mb-1">Total Income</h2>
-            <p className="text-2xl font-bold text-white">KES {totalIncome.toLocaleString()}</p>
-          </div>
-
-          {/* Weekly Chart */}
-          <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg border border-[#2f2f2f]">
-            <h2 className="text-xl font-semibold text-yellow-400 mb-2">Weekly Income Overview</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={weeklyData}>
-                <XAxis dataKey="day" stroke="#ccc" />
-                <YAxis stroke="#ccc" />
-                <Tooltip cursor={{ fill: '#333' }} />
-                <Bar dataKey="income" fill="#34d399" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Best & Worst Day */}
-          <div className="bg-[#1f1f1f] p-4 rounded-xl text-center text-sm text-gray-300 border border-[#2f2f2f]">
-            🟢 <strong>Best Day:</strong> {bestDay} &nbsp;&nbsp; 🔴 <strong>Slowest:</strong> {worstDay}
-          </div>
-
-          {/* Industry-Specific Tip */}
-          <div className="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg border border-[#2f2f2f]">
-            <h2 className="text-xl font-semibold text-blue-400 mb-2">Smart Tip for You</h2>
-            <p className="text-gray-300 text-base">{tip}</p>
-          </div>
-
-          {/* Coming Soon */}
-          <div className="bg-[#2a2a2a] p-4 rounded-xl text-center text-sm text-gray-400">
-            🛠️ Market Watch: Onion prices expected to rise next month due to Narok drought.<br />
-            Premium: Get real-time supplier alerts and demand maps soon.
-          </div>
-
         </div>
-      </div>
+      </DashboardLayout>
     </ProtectedRoute>
   );
 }
