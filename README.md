@@ -108,3 +108,9 @@ View users, inflows, savings activity
 Jaza credit applications
 
 Credit disbursement control panel
+
+8. It just hit me
+- Another powerfull feature to add here would be the marketplace section
+- You registered as a mtumba business your marketplace will be full of mitumba wholesalers
+and bale stockists(Find out bale inafunguliwa lini. This would allow you to buy products for your shop from traders in your region. This could be a premium feature. How it would work is whays
+bothering me at tis point should I allow them to have stockist account on signup or wholesalers account. Needs a little more brainstorming)

@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabaseClient";
 export default function DashboardHome() {
   const [fullName, setFullName] = useState("Loading...");
   const [businessType, setBusinessType] = useState("");
+  const [showToken, setShowToken] = useState(false); // 👈 NEW: toggle for showing debug button
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -31,7 +32,20 @@ export default function DashboardHome() {
     };
 
     fetchUserProfile();
+    setShowToken(true); // ✅ STEP 3: Only needed temporarily for debugging
   }, []);
+
+  // ✅ NEW: log JWT token from Supabase session
+  const logToken = async () => {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) {
+      console.error("No token found. Are you logged in?");
+      return;
+    }
+    console.log("🔐 JWT Token for Postman:", token);
+    alert("Token logged in browser console");
+  };
 
   const insightsMap: Record<string, string[]> = {
     boda: [
@@ -195,6 +209,18 @@ export default function DashboardHome() {
             Soon you’ll receive personalized financial tips and coaching messages to help you grow your business smarter.
           </p>
         </div>
+
+        {/* 🔐 Temporary Debug Button */}
+        {showToken && (
+          <div className="p-4">
+            <button
+              onClick={logToken}
+              className="bg-yellow-500 text-black px-4 py-2 rounded"
+            >
+              🔐 Log JWT to Console (for Postman)
+            </button>
+          </div>
+        )}
       </DashboardLayout>
     </ProtectedRoute>
   );
