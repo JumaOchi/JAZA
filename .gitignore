@@ -9,3 +9,6 @@
 /backend/app/core/__pycache__
 /backend/app/api/__pycache__
 /backend/app/api/routes/__pycache__
+/backend/env
+/backend/app/scripts/__pycache__
+/backend/app/services/__pycache__

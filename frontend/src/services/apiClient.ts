@@ -1,3 +1,4 @@
+// File: frontend/src/services/apiClient.ts
 import { supabase } from "@/lib/supabaseClient";
 
 export const callProtectedBackend = async (endpoint: string, method = "GET", body?: any) => {
