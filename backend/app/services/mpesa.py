@@ -1,3 +1,4 @@
+# app/services/mpesa.py
 import os
 import requests
 from requests.auth import HTTPBasicAuth
@@ -33,8 +34,8 @@ def register_c2b_urls():
     payload = {
         "ShortCode": SHORTCODE,
         "ResponseType": "Completed",
-        "ConfirmationURL": f"{callback_base}/payments/confirmation",
-        "ValidationURL": f"{callback_base}/payments/validate",
+        "ConfirmationURL": f"{callback_base}/income/payments/confirmation",
+        "ValidationURL": f"{callback_base}/income/payments/validate",
     }
 
     response = requests.post(url, headers=headers, json=payload)

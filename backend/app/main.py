@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import routers AFTER .env
-from app.api.routes import profile, income
+from app.api.routes import profile, income, dashboard
 
 app = FastAPI(title="Jaza Finance Backend")
 
@@ -29,7 +29,17 @@ app.add_middleware(
 # Register routes
 app.include_router(profile.router)
 app.include_router(income.router)
+app.include_router(dashboard.router)
+
+
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Jaza API"}
+
+# logging routes to help me with debugging
+@app.on_event("startup")
+async def show_routes():
+    for route in app.routes:
+        print(route.path)
+

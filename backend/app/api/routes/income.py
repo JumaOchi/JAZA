@@ -170,6 +170,13 @@ async def mpesa_confirmation(request: Request):
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid amount format")
 
+        # Parse M-Pesa timestamp format "20250807102000" to proper datetime string
+        try:
+            parsed_time = datetime.strptime(timestamp, "%Y%m%d%H%M%S")
+            iso_time = parsed_time.isoformat()  # or .strftime('%Y-%m-%d %H:%M:%S') if needed
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid TransTime format")
+
         # Normalize phone numbers (07... and 2547...)
         normalized_msisdn = msisdn.strip()
         local_format = "0" + normalized_msisdn[-9:]
@@ -204,17 +211,21 @@ async def mpesa_confirmation(request: Request):
                 "amount": amount,
                 "source": "mpesa",
                 "transaction_id": trans_id,
-                "created_at": timestamp,
+                "created_at": iso_time,
             }) \
             .execute()
 
-        if income_resp.status_code != 201:
-            raise HTTPException(status_code=500, detail="Failed to save income record")
+            # Check for errors in the Supabase response
+        if income_resp.error:
+            raise HTTPException(status_code=500, detail=f"Supabase insert error: {income_resp.error.message}")
+
+        # Optional: double-check that something was inserted
+        if not income_resp.data:
+            raise HTTPException(status_code=500, detail="Income not saved. Empty response from Supabase.")
 
         return {"message": "Callback received successfully"}
 
-    except HTTPException as http_err:
-        raise http_err
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 

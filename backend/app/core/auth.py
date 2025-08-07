@@ -1,3 +1,4 @@
+# app/core/auth.py
 from jose import jwt
 from fastapi import HTTPException, Depends, Request
 from fastapi.security import HTTPBearer
