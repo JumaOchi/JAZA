@@ -4,48 +4,51 @@ import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabaseClient";
+import { getDashboardSummary } from "@/utils/apiClient";
+
+type Summary = {
+  today_income: number;
+  total_income: number;
+  entry_count: number;
+};
 
 export default function DashboardHome() {
   const [fullName, setFullName] = useState("Loading...");
   const [businessType, setBusinessType] = useState("");
-  const [showToken, setShowToken] = useState(false); // 👈 NEW: toggle for showing debug button
+  const [summary, setSummary] = useState<Summary | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       const {
         data: { user },
-        error: sessionError,
       } = await supabase.auth.getUser();
 
       if (user?.id) {
-        const { data: profile, error: profileError } = await supabase
+        const { data: profile } = await supabase
           .from("profiles")
           .select("full_name, business_type")
           .eq("id", user.id)
           .single();
 
-        if (!profileError && profile) {
+        if (profile) {
           setFullName(profile.full_name);
           setBusinessType(profile.business_type || "");
         }
       }
     };
 
-    fetchUserProfile();
-    setShowToken(true); // ✅ STEP 3: Only needed temporarily for debugging
-  }, []);
+    const fetchSummary = async () => {
+      try {
+        const result = await getDashboardSummary();
+        setSummary(result);
+      } catch (error) {
+        console.error("Failed to fetch dashboard summary:", error);
+      }
+    };
 
-  // ✅ NEW: log JWT token from Supabase session
-  const logToken = async () => {
-    const { data } = await supabase.auth.getSession();
-    const token = data.session?.access_token;
-    if (!token) {
-      console.error("No token found. Are you logged in?");
-      return;
-    }
-    console.log("🔐 JWT Token for Postman:", token);
-    alert("Token logged in browser console");
-  };
+    fetchUserProfile();
+    fetchSummary();
+  }, []);
 
   const insightsMap: Record<string, string[]> = {
     boda: [
@@ -106,16 +109,22 @@ export default function DashboardHome() {
         {/* Business Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
           <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-gray-400 mb-1">Yesterday's Total Earnings</h3>
-            <p className="text-2xl font-bold text-[#1c8c4c]">Ksh 1,400</p>
+            <h3 className="text-gray-400 mb-1">Today's Income</h3>
+            <p className="text-2xl font-bold text-[#1c8c4c]">
+              {summary ? `Ksh ${summary.today_income.toFixed(2)}` : "Loading..."}
+            </p>
           </div>
           <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-gray-400 mb-1">Monthly Revenue Growth</h3>
-            <p className="text-2xl font-bold text-blue-400">+30%</p>
+            <h3 className="text-gray-400 mb-1">Total Income</h3>
+            <p className="text-2xl font-bold text-blue-400">
+              {summary ? `Ksh ${summary.total_income.toFixed(2)}` : "Loading..."}
+            </p>
           </div>
           <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-gray-400 mb-1">Jaza Jar Savings</h3>
-            <p className="text-2xl font-bold text-[#1c8c4c]">Ksh 2,000 / 5,000</p>
+            <h3 className="text-gray-400 mb-1">Total Entries</h3>
+            <p className="text-2xl font-bold text-white">
+              {summary ? summary.entry_count : "Loading..."}
+            </p>
           </div>
         </div>
 
@@ -209,18 +218,6 @@ export default function DashboardHome() {
             Soon you’ll receive personalized financial tips and coaching messages to help you grow your business smarter.
           </p>
         </div>
-
-        {/* 🔐 Temporary Debug Button */}
-        {showToken && (
-          <div className="p-4">
-            <button
-              onClick={logToken}
-              className="bg-yellow-500 text-black px-4 py-2 rounded"
-            >
-              🔐 Log JWT to Console (for Postman)
-            </button>
-          </div>
-        )}
       </DashboardLayout>
     </ProtectedRoute>
   );

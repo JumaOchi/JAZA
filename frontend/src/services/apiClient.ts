@@ -1,20 +1,32 @@
 // File: frontend/src/services/apiClient.ts
+
 import { supabase } from "@/lib/supabaseClient";
 
-export const callProtectedBackend = async (endpoint: string, method = "GET", body?: any) => {
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+export const callProtectedBackend = async (
+  endpoint: string,
+  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
+  body?: any
+) => {
   const { data: sessionData } = await supabase.auth.getSession();
   const token = sessionData?.session?.access_token;
 
-  if (!token) throw new Error("Not authenticated");
+  if (!token) throw new Error("User is not authenticated");
 
-  const response = await fetch(`http://localhost:8000${endpoint}`, {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // <-- send token to backend
+      Authorization: `Bearer ${token}`,
     },
     body: body ? JSON.stringify(body) : undefined,
   });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Request failed: ${response.status} ${errorText}`);
+  }
 
   return response.json();
 };
