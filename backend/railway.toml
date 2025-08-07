@@ -1,9 +1,11 @@
+# backend/railway.toml
+
 [build]
 builder = "nixpacks"
-buildCommand = "cd backend && pip install -r requirements.txt"
 
 [deploy]
-startCommand = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
 
 [variables]
 NIXPACKS_LANGUAGES = "python"
+
