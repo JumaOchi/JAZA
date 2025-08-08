@@ -1,3 +1,4 @@
+# app/api/routes/dashboard.py
 from fastapi import APIRouter, Depends
 from app.core.auth import get_current_user
 from app.services import summary

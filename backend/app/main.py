@@ -15,7 +15,8 @@ app = FastAPI(title="Jaza Finance Backend")
 # CORS setup so frontend can talk to backend locally and on Vercel
 origins = [
     "http://localhost:3000",
-    "https://your-vercel-app.vercel.app"
+    "https://your-vercel-app.vercel.app",
+    "https://jaza-production.up.railway.app/"
 ]
 
 app.add_middleware(
