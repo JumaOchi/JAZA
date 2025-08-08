@@ -37,15 +37,19 @@ export const callProtectedBackend = async (
 export const getDashboardSummary = async () => {
   const raw = await callProtectedBackend("/dashboard/summary", "GET");
 
-  // Normalize shape (fill defaults if missing)
   return {
     totalIncome: raw?.total_income ?? 0,
     todayIncome: raw?.today_income ?? 0,
     sourceBreakdown: Array.isArray(raw?.source_breakdown)
-      ? raw.source_breakdown.map((s: any) => ({
-          source: s?.source ?? "Unknown",
-          total: s?.total ?? 0,
-        }))
+      ? raw.source_breakdown.map((s: unknown) => {
+          if (typeof s === "object" && s !== null && "source" in s && "total" in s) {
+            return {
+              source: (s as { source?: string }).source ?? "Unknown",
+              total: (s as { total?: number }).total ?? 0,
+            };
+          }
+          return { source: "Unknown", total: 0 };
+        })
       : [],
   };
 };
