@@ -3,40 +3,48 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { Session } from '@supabase/supabase-js';
 import DashboardLayout from "@/components/DashboardLayout";
 
 export default function JazaJar() {
-  const [session, setSession] = useState<Session | null>(null);
+  // Removed unused `session` state 
   const [savings, setSavings] = useState<number>(0);
   const [goal, setGoal] = useState<number>(3000);
   const [savingRate, setSavingRate] = useState<number>(10); // percent
   const [inputGoal, setInputGoal] = useState('');
   const [inputRate, setInputRate] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null); // store userId for reuse
 
+  // Fetch user once on mount 
   useEffect(() => {
     const init = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-      setSession({ user } as Session);
-      fetchSavings(user.id);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        fetchSavings(user.id, savingRate); // initial fetch
+      }
     };
-
     init();
-  }, [goal, savingRate]);
+  }, []);
 
-  const fetchSavings = async (userId: string) => {
+  // Refetch savings when savingRate changes
+  useEffect(() => {
+    if (userId) {
+      fetchSavings(userId, savingRate);
+    }
+  }, [savingRate, userId]);
+
+  const fetchSavings = async (id: string, rate: number) => {
     const { data, error } = await supabase
       .from('income')
       .select('amount')
-      .eq('user_id', userId)
+      .eq('user_id', id)
       .order('created_at', { ascending: false });
 
     if (!error && data) {
-      const totalSaved = data.reduce((sum, item) => sum + (item.amount * savingRate / 100), 0);
+      const totalSaved = data.reduce(
+        (sum, item) => sum + (item.amount * rate / 100),
+        0
+      );
       setSavings(totalSaved);
     }
   };
@@ -59,6 +67,7 @@ export default function JazaJar() {
       <DashboardLayout>
         <div className="w-full h-full bg-transparent">
           <div className="max-w-xl mx-auto space-y-8">
+            {/* Header */}
             <div className="text-center">
               <h1 className="text-3xl font-bold text-green-400">Jaza Jar</h1>
               <p className="text-gray-400">Save daily, unlock funding, grow your hustle 🚀</p>
@@ -74,8 +83,8 @@ export default function JazaJar() {
                 ></div>
               </div>
               <p className="mt-2 text-sm text-gray-300">
-                KES {savings.toFixed(0)} saved out of KES {goal}.<br />
-                ✅ You qualify for up to <strong>KES {qualifiedAmount.toFixed(0)}</strong> based on your savings.
+                KES {savings.toLocaleString()} saved out of KES {goal.toLocaleString()}.<br />
+                ✅ You qualify for up to <strong>KES {qualifiedAmount.toLocaleString()}</strong> based on your savings.
               </p>
             </div>
 
@@ -87,6 +96,7 @@ export default function JazaJar() {
                   <label className="text-sm block text-gray-400 mb-1">Set Savings Goal (KES)</label>
                   <input
                     type="number"
+                    min="0"
                     value={inputGoal}
                     onChange={(e) => setInputGoal(e.target.value)}
                     placeholder="e.g. 5000"
@@ -97,6 +107,7 @@ export default function JazaJar() {
                   <label className="text-sm block text-gray-400 mb-1">Saving Rate (% of income)</label>
                   <input
                     type="number"
+                    min="0"
                     value={inputRate}
                     onChange={(e) => setInputRate(e.target.value)}
                     placeholder="e.g. 10"
@@ -124,7 +135,7 @@ export default function JazaJar() {
             </div>
 
             <div className="text-center text-sm text-gray-500">
-              🔒 Your savings data is private & secure
+               Your savings data is private & secure
             </div>
           </div>
         </div>

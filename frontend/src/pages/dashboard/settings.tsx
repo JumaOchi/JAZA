@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { supabase } from '@/lib/supabaseClient';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import DashboardLayout from "@/components/DashboardLayout";
+import { User } from '@supabase/supabase-js'; // FIX: Explicit type import for Supabase User
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<any>(null);
@@ -16,34 +17,36 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchProfile = async () => {
       const {
-        data: { user },
+        data,
         error: userError,
       } = await supabase.auth.getUser();
+
+      const user: User | null = data?.user ?? null; // FIX: Explicit type assignment to avoid TS error
 
       if (userError || !user) {
         router.push('/login');
         return;
       }
 
-      const { data, error } = await supabase
+      const { data: profileData, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle(); // FIX: .single() → .maybeSingle() to satisfy strict null checks
 
-      if (!error && data) {
-        setProfile(data);
+      if (!error && profileData) {
+        setProfile(profileData);
         setForm({
-          full_name: data.full_name || '',
-          phone_number: data.phone_number || '',
-          location: data.location || '',
+          full_name: profileData.full_name || '',
+          phone_number: profileData.phone_number || '',
+          location: profileData.location || '',
         });
       }
       setLoading(false);
     };
 
     fetchProfile();
-  }, []);
+  }, [router]); // FIX: Added router as dependency for useEffect lint rule
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -55,9 +58,11 @@ export default function SettingsPage() {
     setMessage('');
 
     const {
-      data: { user },
+      data,
       error: userError,
     } = await supabase.auth.getUser();
+
+    const user: User | null = data?.user ?? null; // FIX: Explicit type assignment
 
     if (userError || !user) {
       setMessage('Unable to get user session. Please log in again.');

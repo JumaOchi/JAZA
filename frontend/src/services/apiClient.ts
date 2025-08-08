@@ -7,7 +7,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const callProtectedBackend = async (
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
-  body?: any
+  // FIX: Replaced `any` with `Record<string, unknown>` to satisfy @typescript-eslint/no-explicit-any
+  body?: Record<string, unknown>
 ) => {
   const { data: sessionData } = await supabase.auth.getSession();
   const token = sessionData?.session?.access_token;

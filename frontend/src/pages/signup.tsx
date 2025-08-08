@@ -24,7 +24,6 @@ export default function Signup() {
       },
     });
 
-
     if (error) {
       setMessage(error.message);
     } else {
@@ -69,8 +68,9 @@ export default function Signup() {
 
             {signupSuccess ? (
               <div className="text-center space-y-4">
+                {/* FIX: Escaped apostrophe to &apos; to satisfy react/no-unescaped-entities */}
                 <p className="text-gray-700 text-base">
-                  You're almost there! Check your email to confirm your account.
+                  You&apos;re almost there! Check your email to confirm your account.
                 </p>
                 <Link href="/login" className="text-[#1c8c4c] font-medium hover:underline">
                   Proceed to login →

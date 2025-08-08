@@ -67,7 +67,8 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto text-center mb-14">
           <h2 className="text-3xl font-bold text-green-700 mb-4">Built for Everyday Hustlers</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Whether you're a mama mboga, a boda rider, or a small shop owner, Jaza helps you stay in control of your money.
+            Whether you&apos;re a mama mboga, a boda rider, or a small shop owner, Jaza helps you stay in control of your money.
+            {/* FIX: replaced "you're" apostrophe with &apos; */}
           </p>
         </div>
 
@@ -116,7 +117,9 @@ export default function HomePage() {
       <section className="bg-gray-900 py-12 px-6">
         <div className="max-w-5xl mx-auto text-center text-white mb-8">
           <h3 className="text-2xl font-bold mb-4">Trusted by future partners</h3>
-          <p className="text-gray-400">We're building the future of inclusive finance with Africa's top brands</p>
+          <p className="text-gray-400">We&apos;re building the future of inclusive finance with Africa&apos;s top brands
+            {/* FIX: replaced "We're" and "Africa's" apostrophes with &apos; */}
+          </p>
         </div>
         <div className="flex justify-center items-center gap-10 flex-wrap max-w-4xl mx-auto">
           <Image src="/logos/safaricom.png" alt="Safaricom" width={120} height={40} />
@@ -155,7 +158,9 @@ export default function HomePage() {
             <p className="mt-4 font-semibold text-green-700">– Alice, Mama Mboga in Gikambura</p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow">
-            <p className="text-gray-600 italic">“I love how Jaza tracks my daily M-Pesa income. It’s like having a financial assistant in my pocket.”</p>
+            <p className="text-gray-600 italic">“I love how Jaza tracks my daily M-Pesa income. It&apos;s like having a financial assistant in my pocket.”
+              {/* FIX: replaced "It's" apostrophe with &apos; */}
+            </p>
             <p className="mt-4 font-semibold text-green-700">– Brian, Boda Rider in Kisumu</p>
           </div>
         </div>

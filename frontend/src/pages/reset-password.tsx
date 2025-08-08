@@ -1,6 +1,7 @@
 // pages/reset-password.tsx
 import Head from "next/head";
-import { useState, useEffect } from "react";
+// Removed unused import `useEffect` — flagged by @typescript-eslint/no-unused-vars
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../lib/supabaseClient";
 

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "@/lib/supabaseClient";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -176,7 +176,8 @@ export default function Onboarding() {
               </form>
 
               <div className="mt-8 text-center text-gray-400 text-sm">
-                <p>Ready to grow your business with Jaza? Let's get started!</p>
+                {/* FIX: Escaped apostrophe to satisfy react/no-unescaped-entities */}
+                <p>Ready to grow your business with Jaza? Let&apos;s get started!</p>
               </div>
             </div>
           </div>

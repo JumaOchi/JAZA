@@ -1,3 +1,4 @@
+// src/pages/dashboard/index.tsx
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -99,7 +100,7 @@ export default function DashboardHome() {
       <DashboardLayout>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
-            Welcome back, <span className="text-[#1c8c4c]">{fullName}</span> 👋
+            Welcome back, <span className="text-[#1c8c4c]">{fullName}</span> 
           </h1>
           <p className="text-gray-400 text-base">
             Empowering your growth with real-time financial visibility.
@@ -137,7 +138,7 @@ export default function DashboardHome() {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-lg font-semibold text-white mb-2">
-              📲 Connect M-Pesa Till
+               Connect M-Pesa Till
             </h2>
             <p className="text-sm text-gray-300 mb-3">
               Link your business Till or Paybill for real-time income tracking.
@@ -156,7 +157,7 @@ export default function DashboardHome() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <h2 className="text-lg font-semibold text-white mb-2">
-              ✍️ Add Daily Cash Earnings
+               Add Daily Cash Earnings
             </h2>
             <p className="text-sm text-gray-300 mb-3">
               Enter your cash sales manually for a full cashflow picture.
@@ -171,7 +172,7 @@ export default function DashboardHome() {
 
         {/* Insights */}
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-white mb-4">🔍 Smart Insights</h2>
+          <h2 className="text-xl font-bold text-white mb-4"> Smart Insights</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-300">
             {insights.map((tip, idx) => (
               <li key={idx}>{tip}</li>
@@ -181,7 +182,7 @@ export default function DashboardHome() {
 
         {/* Industry Snapshot */}
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-white mb-4">📰 Market Snapshot</h2>
+          <h2 className="text-xl font-bold text-white mb-4"> Market Snapshot</h2>
           <ul className="space-y-2 text-gray-300">
             {marketTips.map((news, idx) => (
               <li key={idx} className="bg-gray-800 p-4 rounded-lg shadow-sm">
@@ -199,7 +200,7 @@ export default function DashboardHome() {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <h2 className="text-xl font-semibold text-[#1c8c4c] mb-2">
-            💡 Boost your growth with Jaza
+             Boost your growth with Jaza
           </h2>
           <p className="text-gray-300 mb-4">
             Save towards your next stock boost or float top-up. Earn access to smart credit by staying consistent.
@@ -211,13 +212,14 @@ export default function DashboardHome() {
           </Link>
         </motion.div>
 
-        {/* Coming Soon Section */}
+                {/* Coming Soon Section */}
         <div className="mt-12 p-6 bg-gray-700 border border-blue-400 rounded-xl text-blue-300 text-center">
-          <h2 className="text-xl font-semibold mb-2">🧠 Coaching & Advice Coming Soon</h2>
+          <h2 className="text-xl font-semibold mb-2"> Coaching & Advice Coming Soon</h2>
           <p className="text-sm">
-            Soon you’ll receive personalized financial tips and coaching messages to help you grow your business smarter.
+            Soon you&rsquo;ll receive personalized financial tips and coaching messages to help you grow your business smarter.
           </p>
         </div>
+
       </DashboardLayout>
     </ProtectedRoute>
   );
