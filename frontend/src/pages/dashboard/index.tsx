@@ -5,7 +5,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabaseClient";
-import { getDashboardSummary } from "@/utils/apiClient";
+import { getDashboardSummary } from "@/services/apiClient";
 
 type Summary = {
   today_income: number;
