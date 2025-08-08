@@ -110,7 +110,7 @@ export default function DashboardHome() {
         {/* Business Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
           <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
-            <h3 className="text-gray-400 mb-1">Today's Income</h3>
+            <h3 className="text-gray-400 mb-1">Today&apos;s Income</h3>
             <p className="text-2xl font-bold text-[#1c8c4c]">
               {summary ? `Ksh ${summary.today_income.toFixed(2)}` : "Loading..."}
             </p>

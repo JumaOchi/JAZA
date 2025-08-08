@@ -5,23 +5,25 @@ import { useRouter } from 'next/router';
 import { supabase } from '@/lib/supabaseClient';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import DashboardLayout from "@/components/DashboardLayout";
-import { User } from '@supabase/supabase-js'; // FIX: Explicit type import for Supabase User
+import { User } from '@supabase/supabase-js';
+
+// Explicit type for profile data
+interface Profile {
+  full_name: string;
+  phone_number: string;
+  location: string;
+}
 
 export default function SettingsPage() {
-  const [profile, setProfile] = useState<any>(null);
-  const [form, setForm] = useState({ full_name: '', phone_number: '', location: '' });
+  const [form, setForm] = useState<Profile>({ full_name: '', phone_number: '', location: '' });
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const {
-        data,
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      const user: User | null = data?.user ?? null; // FIX: Explicit type assignment to avoid TS error
+      const { data, error: userError } = await supabase.auth.getUser();
+      const user: User | null = data?.user ?? null;
 
       if (userError || !user) {
         router.push('/login');
@@ -32,10 +34,9 @@ export default function SettingsPage() {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .maybeSingle(); // FIX: .single() → .maybeSingle() to satisfy strict null checks
+        .maybeSingle();
 
       if (!error && profileData) {
-        setProfile(profileData);
         setForm({
           full_name: profileData.full_name || '',
           phone_number: profileData.phone_number || '',
@@ -46,7 +47,7 @@ export default function SettingsPage() {
     };
 
     fetchProfile();
-  }, [router]); // FIX: Added router as dependency for useEffect lint rule
+  }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -57,12 +58,8 @@ export default function SettingsPage() {
     setLoading(true);
     setMessage('');
 
-    const {
-      data,
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    const user: User | null = data?.user ?? null; // FIX: Explicit type assignment
+    const { data, error: userError } = await supabase.auth.getUser();
+    const user: User | null = data?.user ?? null;
 
     if (userError || !user) {
       setMessage('Unable to get user session. Please log in again.');
@@ -75,11 +72,7 @@ export default function SettingsPage() {
       .update(form)
       .eq('id', user.id);
 
-    if (error) {
-      setMessage('Failed to update profile.');
-    } else {
-      setMessage('Profile updated successfully!');
-    }
+    setMessage(error ? 'Failed to update profile.' : 'Profile updated successfully!');
     setLoading(false);
   };
 

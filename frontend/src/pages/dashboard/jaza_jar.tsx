@@ -24,7 +24,7 @@ export default function JazaJar() {
       }
     };
     init();
-  }, []);
+  }, [savingRate]);
 
   // Refetch savings when savingRate changes
   useEffect(() => {

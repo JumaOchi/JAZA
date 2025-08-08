@@ -26,6 +26,7 @@ export default function Sidebar() {
       {/* Mobile Toggle */}
       <button
         className="fixed top-4 left-4 z-50 bg-[#1c8c4c] p-2 rounded text-white md:hidden"
+        aria-label="Toggle navigation menu"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -41,10 +42,11 @@ export default function Sidebar() {
           <h2 className="text-3xl font-bold text-[#1c8c4c] mb-10">Jaza</h2>
           <nav className="space-y-3">
             {navItems.map((item) => {
-              const isActive = router.pathname === item.href;
+              const isActive = router.pathname.startsWith(item.href);
               return (
                 <Link key={item.href} href={item.href} legacyBehavior>
                   <a
+                    onClick={() => setIsOpen(false)} // Close sidebar on mobile
                     className={`block px-4 py-2 rounded-xl font-medium transition-colors ${
                       isActive
                         ? "bg-[#1c8c4c] text-white shadow-md"
