@@ -1,5 +1,4 @@
-// File: frontend/src/services/apiClient.ts
-
+// frontend/src/lib/apiClient.ts
 import { supabase } from "@/lib/supabaseClient";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -7,7 +6,6 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const callProtectedBackend = async (
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
-  // FIX: Replaced `any` with `Record<string, unknown>` to satisfy @typescript-eslint/no-explicit-any
   body?: Record<string, unknown>
 ) => {
   const { data: sessionData } = await supabase.auth.getSession();
@@ -30,4 +28,24 @@ export const callProtectedBackend = async (
   }
 
   return response.json();
+};
+
+/**
+ * Normalizes backend summary response so UI code is stable
+ * even if backend changes the structure slightly.
+ */
+export const getDashboardSummary = async () => {
+  const raw = await callProtectedBackend("/dashboard/summary", "GET");
+
+  // Normalize shape (fill defaults if missing)
+  return {
+    totalIncome: raw?.total_income ?? 0,
+    todayIncome: raw?.today_income ?? 0,
+    sourceBreakdown: Array.isArray(raw?.source_breakdown)
+      ? raw.source_breakdown.map((s: any) => ({
+          source: s?.source ?? "Unknown",
+          total: s?.total ?? 0,
+        }))
+      : [],
+  };
 };

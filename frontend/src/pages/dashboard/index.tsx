@@ -10,7 +10,7 @@ import { getDashboardSummary } from "@/services/apiClient";
 type Summary = {
   today_income: number;
   total_income: number;
-  entry_count: number;
+  entries_count: number; // UPDATED: matches backend field name now
 };
 
 export default function DashboardHome() {
@@ -41,6 +41,7 @@ export default function DashboardHome() {
     const fetchSummary = async () => {
       try {
         const result = await getDashboardSummary();
+        // UPDATED: backend now returns flat object, so no `.summary` unwrap
         setSummary(result);
       } catch (error) {
         console.error("Failed to fetch dashboard summary:", error);
@@ -124,7 +125,8 @@ export default function DashboardHome() {
           <div className="bg-gray-800 p-6 rounded-2xl shadow-sm">
             <h3 className="text-gray-400 mb-1">Total Entries</h3>
             <p className="text-2xl font-bold text-white">
-              {summary ? summary.entry_count : "Loading..."}
+              {/* UPDATED: now using entries_count from backend */}
+              {summary ? summary.entries_count : "Loading..."}
             </p>
           </div>
         </div>
@@ -212,7 +214,7 @@ export default function DashboardHome() {
           </Link>
         </motion.div>
 
-                {/* Coming Soon Section */}
+        {/* Coming Soon Section */}
         <div className="mt-12 p-6 bg-gray-700 border border-blue-400 rounded-xl text-blue-300 text-center">
           <h2 className="text-xl font-semibold mb-2"> Coaching & Advice Coming Soon</h2>
           <p className="text-sm">

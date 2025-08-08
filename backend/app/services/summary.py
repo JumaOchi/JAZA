@@ -8,6 +8,7 @@ def parse_float(amount):
     except (TypeError, ValueError):
         return 0.0
 
+
 async def get_dashboard_summary(user_id: str):
     # Fetch all income entries for the user
     response = supabase.table("income").select("*").eq("user_id", user_id).execute()
@@ -41,14 +42,13 @@ async def get_dashboard_summary(user_id: str):
             if entry_date == today_str:
                 today_income += amount
 
+    # Return the shape the frontend actually needs — flat, no nested summary key
     return {
-        "summary": {
-            "total_income": total_income,
-            "today_income": today_income,
-            "source_breakdown": {
-                "mpesa": mpesa_income,
-                "manual": manual_income
-            },
-            "entries_count": len(records)
-        }
+        "total_income": total_income,
+        "today_income": today_income,
+        "source_breakdown": {
+            "mpesa": mpesa_income,
+            "manual": manual_income
+        },
+        "entries_count": len(records)
     }
