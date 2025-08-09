@@ -61,9 +61,7 @@ jaza/
 │   ├── system-design.md
 │   ├── product-roadmap.md
 │   └── pitch-deck.md
-├── .env.example
 ├── README.md
-└── docker-compose.yml
 ```
 
 ---
