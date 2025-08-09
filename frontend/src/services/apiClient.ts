@@ -1,4 +1,3 @@
-// frontend/src/lib/apiClient.ts
 import { supabase } from "@/lib/supabaseClient";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -10,7 +9,6 @@ export const callProtectedBackend = async (
 ) => {
   const { data: sessionData } = await supabase.auth.getSession();
   const token = sessionData?.session?.access_token;
-
   if (!token) throw new Error("User is not authenticated");
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -30,26 +28,13 @@ export const callProtectedBackend = async (
   return response.json();
 };
 
-/**
- * Normalizes backend summary response so UI code is stable
- * even if backend changes the structure slightly.
- */
 export const getDashboardSummary = async () => {
   const raw = await callProtectedBackend("/dashboard/summary", "GET");
 
+  // Normalize shape so index.tsx never breaks
   return {
-    totalIncome: raw?.total_income ?? 0,
-    todayIncome: raw?.today_income ?? 0,
-    sourceBreakdown: Array.isArray(raw?.source_breakdown)
-      ? raw.source_breakdown.map((s: unknown) => {
-          if (typeof s === "object" && s !== null && "source" in s && "total" in s) {
-            return {
-              source: (s as { source?: string }).source ?? "Unknown",
-              total: (s as { total?: number }).total ?? 0,
-            };
-          }
-          return { source: "Unknown", total: 0 };
-        })
-      : [],
+    today_income: Number(raw.today_income ?? raw.todayIncome ?? 0),
+    total_income: Number(raw.total_income ?? raw.totalIncome ?? 0),
+    entries_count: Number(raw.entries_count ?? raw.entriesCount ?? 0),
   };
 };
