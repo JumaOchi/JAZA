@@ -20,7 +20,7 @@ export default function Signup() {
       email,
       password,
       options: {
-        emailRedirectTo: 'http://localhost:3000/confirm-email',
+        emailRedirectTo: 'https://jaza.vercel.app/confirm-email',
       },
     });
 
